@@ -1,3 +1,5 @@
+import Layout from "./component/Layout"
+
 export default function Page() {
-    return <h1>Hello, Next.js!</h1>;
+    return <Layout>Hello next</Layout>;
 }
