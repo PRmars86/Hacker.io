@@ -18,10 +18,29 @@ export const removeCookie = key => {
 
 //get cookie as stored tokens
 export const getCookie = key => {
-    if (typeof window) {
-        return cookie.get(key);
-    }
+    // if (typeof window) {
+    //     return cookie.get(key);
+    // }
+    return typeof window ? getCookieFromBrowser(key) : getCookieFromServer(key, req);
 }
+
+export const getCookieFromBrowser = key => {
+    return cookie.get(key);
+};
+
+export const getCookieFromServer = (key, req) => {
+    if (!req.headers.cookie) {
+        return undefined;
+    }
+    console.log('req.headers.cookie', req.headers.cookie);
+    let token = req.headers.cookie.split(';').find(c => c.trim().startsWith(`${key}=`));
+    if (!token) {
+        return undefined;
+    }
+    let tokenValue = token.split('=')[1];
+    console.log('getCookieFromServer', tokenValue);
+    return tokenValue;
+};
 
 //set in localstorage
 export const setLocalStorage = (key, value) => {
