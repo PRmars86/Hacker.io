@@ -79,7 +79,7 @@ const Create = ({ user, token }) => {
                 name: '',
                 content: '',
                 formData: '',
-                buttonText: 'Created',
+                buttonText: 'Create',
                 imageUploadText: 'Upload image',
                 success: `${response.data.name} is created`
             });
