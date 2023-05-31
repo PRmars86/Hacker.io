@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-//import Resizer from 'react-image-file-resizer';
+import Resizer from 'react-image-file-resizer';
 //const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 import { API } from '../../../config';
 import { showSuccessMessage, showErrorMessage } from '../../../helpers/alerts';
@@ -15,19 +15,17 @@ const Create = ({ user, token }) => {
         content: '',
         error: '',
         success: '',
-        formData: typeof window && new FormData(),
         buttonText: 'Create',
-        imageUploadText: 'Upload image'
+        image: ''
     });
 
-    const { name, content, success, error, formData, buttonText, imageUploadText } = state;
+    const [imageUploadButtonName, setImageUploadButtonName] = useState('Upload image');
+
+    const { name, content, success, error, image, buttonText, imageUploadText } = state;
 
 
     const handleChange = name => e => {
-        const value = name === 'image' ? e.target.files[0] : e.target.value;
-        const imageName = name === 'image' ? e.target.files[0] : 'Upload image';
-        formData.set(name, value);
-        setState({ ...state, [name]: value, error: '', success: '', imageUploadText: imageName });
+        setState({ ...state, [name]: e.target.value, error: '', success: '' });
     };
 
     // const handleContent = e => {
@@ -36,28 +34,28 @@ const Create = ({ user, token }) => {
     //     setState({ ...state, success: '', error: '' });
     // };
 
-    // const handleImage = event => {
-    //     let fileInput = false;
-    //     if (event.target.files[0]) {
-    //         fileInput = true;
-    //     }
-    //     setImageUploadButtonName(event.target.files[0].name);
-    //     if (fileInput) {
-    //         Resizer.imageFileResizer(
-    //             event.target.files[0],
-    //             300,
-    //             300,
-    //             'JPEG',
-    //             100,
-    //             0,
-    //             uri => {
-    //                 // console.log(uri);
-    //                 setState({ ...state, image: uri, success: '', error: '' });
-    //             },
-    //             'base64'
-    //         );
-    //     }
-    // };
+    const handleImage = event => {
+        let fileInput = false;
+        if (event.target.files[0]) {
+            fileInput = true;
+        }
+        setImageUploadButtonName(event.target.files[0].name);
+        if (fileInput) {
+            Resizer.imageFileResizer(
+                event.target.files[0],
+                300,
+                300,
+                'JPEG',
+                100,
+                0,
+                uri => {
+                    //console.log(uri);
+                    setState({ ...state, image: uri, success: '', error: '' });
+                },
+                'base64'
+            );
+        }
+    };
 
     const handleSubmit = async e => {
         e.preventDefault();
@@ -67,7 +65,7 @@ const Create = ({ user, token }) => {
         try {
             const response = await axios.post(
                 `${API}/category`,
-                formData,
+                { name, content, image },
                 {
                     headers: {
                         Authorization: `Bearer ${token}`
@@ -75,7 +73,7 @@ const Create = ({ user, token }) => {
                 }
             );
             console.log('CATEGORY CREATE RESPONSE', response);
-            //            setImageUploadButtonName('Upload image');
+            setImageUploadButtonName('Upload image');
             setState({
                 ...state,
                 name: '',
@@ -103,8 +101,8 @@ const Create = ({ user, token }) => {
             </div>
             <div className="form-group">
                 <label className="btn btn-outline-secondary">
-                    Upload image
-                    <input onChange={handleChange('image')} type="file" accept="image/*" className="form-control" />
+                    {imageUploadButtonName}
+                    <input onChange={handleImage} type="file" accept="image/*" className="form-control" hidden />
                 </label>
             </div>
             <div>
