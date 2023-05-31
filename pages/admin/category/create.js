@@ -2,37 +2,37 @@ import dynamic from 'next/dynamic';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Resizer from 'react-image-file-resizer';
-//const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 import { API } from '../../../config';
 import { showSuccessMessage, showErrorMessage } from '../../../helpers/alerts';
 import Layout from '../../../components/Layout';
 import withAdmin from '../../withAdmin';
-//import 'react-quill/dist/quill.bubble.css';
+import 'react-quill/dist/quill.bubble.css';
 
 const Create = ({ user, token }) => {
     const [state, setState] = useState({
         name: '',
-        content: '',
         error: '',
         success: '',
         buttonText: 'Create',
         image: ''
     });
 
+    const [content, setContent] = useState('');
     const [imageUploadButtonName, setImageUploadButtonName] = useState('Upload image');
 
-    const { name, content, success, error, image, buttonText, imageUploadText } = state;
+    const { name, success, error, image, buttonText, imageUploadText } = state;
 
 
     const handleChange = name => e => {
         setState({ ...state, [name]: e.target.value, error: '', success: '' });
     };
 
-    // const handleContent = e => {
-    //     console.log(e);
-    //     setContent(e);
-    //     setState({ ...state, success: '', error: '' });
-    // };
+    const handleContent = e => {
+        //console.log(e);
+        setContent(e);
+        setState({ ...state, success: '', error: '' });
+    };
 
     const handleImage = event => {
         let fileInput = false;
@@ -97,7 +97,14 @@ const Create = ({ user, token }) => {
             </div>
             <div className="form-group">
                 <label className="text-muted">Content</label>
-                <textarea onChange={handleChange('content')} value={content} className="form-control" required />
+                <ReactQuill
+                    value={content}
+                    onChange={handleContent}
+                    placeholder="Write something..."
+                    theme="bubble"
+                    className="pb-5 mb-3"
+                    style={{ border: '1px solid #666' }}
+                />
             </div>
             <div className="form-group">
                 <label className="btn btn-outline-secondary">
