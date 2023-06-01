@@ -4,14 +4,28 @@ import moment from 'moment';
 import { API } from '../../config';
 import Layout from '../../components/Layout';
 import { useState } from 'react';
+import InfiniteScroll from 'react-infinite-scroller';
 
 const Links = ({ query, category, links, totalLinks, linksLimit, linkSkip }) => {
     const [allLinks, setAllLinks] = useState(links);
+    const [limit, setLimit] = useState(linksLimit);
+    const [skip, setSkip] = useState(0);
+    const [size, setSize] = useState(totalLinks);
+
+    const handleClick = async linkId => {
+        const response = await axios.put(`${API}/click-count`, { linkId });
+        loadUpdatedLinks();
+    };
+
+    const loadUpdatedLinks = async () => {
+        const response = await axios.post(`${API}/category/${query.slug}`);
+        setAllLinks(response.data.links);
+    };
 
     const listOfLinks = () =>
         allLinks.map((l, i) => (
             <div className="row alert alert-primary p-2" key={i}>
-                <div className="col-md-8" key={i}>
+                <div className="col-md-8" onClick={e => handleClick(l._id)} key={i}>
                     <a href={l.url} target="_blank">
                         <h5 className="pt-2">{l.title}</h5>
                         <h6 className="pt-2 text-danger" style={{ fontSize: '12px' }}>
@@ -23,6 +37,8 @@ const Links = ({ query, category, links, totalLinks, linksLimit, linkSkip }) => 
                     <span className="pull-right">
                         {moment(l.createdAt).fromNow()} by {l.postedBy.name}
                     </span>
+                    <br />
+                    <span className="badge text-secondary pull-right">{l.clicks} clicks</span>
                 </div>
                 <div className="col-md-12" key={i}>
                     <span className="badge text-dark" key={i}>
@@ -34,6 +50,16 @@ const Links = ({ query, category, links, totalLinks, linksLimit, linkSkip }) => 
                 </div>
             </div>
         ));
+
+    const loadMore = async () => {
+        let toSkip = skip + limit;
+        const response = await axios.post(`${API}/category/${query.slug}`, { skip: toSkip, limit });
+        setAllLinks([...allLinks, ...response.data.links]);
+        console.log('allLinks', allLinks);
+        console.log('response.data.links.length', response.data.links.length);
+        setSize(response.data.links.length);
+        setSkip(toSkip);
+    };
 
     return (
         <Layout>
@@ -55,22 +81,17 @@ const Links = ({ query, category, links, totalLinks, linksLimit, linkSkip }) => 
                 </div>
             </div>
 
-            <p>load more button</p>
+            <div className="row">
+                <div className="col-md-12 text-center">
+                    <InfiniteScroll
+                        pageStart={0}
+                        loadMore={loadMore}
+                        hasMore={size > 0 && size >= limit}
+                        loader={<img src="/static/images/loading.gif" alt="loading" width="200" height="200" />}
+                    ></InfiniteScroll>
+                </div>
+            </div>
         </Layout>
-        // <Layout>
-        //     <div className="row">
-        //         <div className="col-md-8">
-        //             <h1 className="display-4 font-weight-bold">{category.name} - URL/Links</h1>
-        //             <div className="lead alert alert-secondary pt-4">{renderHTML(category.content || '')}</div>
-        //         </div>
-        //         <div className="col-md-4">
-        //             <img src={category.image.url} alt={category.name} style={{ width: 'auto', maxHeight: '200px' }} />
-        //         </div>
-        //     </div>
-        //     <br />
-
-        //     <p>load more button</p>
-        // </Layout>
     );
 };
 

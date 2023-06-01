@@ -1,16 +1,17 @@
-import { useState, useEffect } from "react";
-import Layout from "../../../components/Layout";
-import axios from "axios";
+// imports
+import { useState, useEffect } from 'react';
+import Layout from '../../../components/Layout';
+import axios from 'axios';
 import { getCookie, isAuth } from '../../../helpers/auth';
 import { API } from '../../../config';
 import { showSuccessMessage, showErrorMessage } from '../../../helpers/alerts';
-import React from "react";
-import withUser from "../../withUser";
+import React from 'react';
 
 const Create = ({ req }) => {
 
     const token = getCookie('token', req);
 
+    // state
     const [state, setState] = useState({
         title: '',
         url: '',
@@ -24,6 +25,7 @@ const Create = ({ req }) => {
 
     const { title, url, categories, loadedCategories, success, error, type, medium } = state;
 
+    // load categories when component mounts using useEffect
     useEffect(() => {
         loadCategories();
     }, [success]);
@@ -86,7 +88,7 @@ const Create = ({ req }) => {
                     <input
                         type="radio"
                         onClick={handleMediumClick}
-                        defaultChecked={medium === 'video'}
+                        checked={medium === 'video'}
                         value="video"
                         className="from-check-input"
                         name="medium"
@@ -100,7 +102,7 @@ const Create = ({ req }) => {
                     <input
                         type="radio"
                         onClick={handleMediumClick}
-                        defaultChecked={medium === 'book'}
+                        checked={medium === 'book'}
                         value="book"
                         className="from-check-input"
                         name="medium"
@@ -118,7 +120,7 @@ const Create = ({ req }) => {
                     <input
                         type="radio"
                         onClick={handleTypeClick}
-                        defaultChecked={type === 'free'}
+                        checked={type === 'free'}
                         value="free"
                         className="from-check-input"
                         name="type"
@@ -132,7 +134,7 @@ const Create = ({ req }) => {
                     <input
                         type="radio"
                         onClick={handleTypeClick}
-                        defaultChecked={type === 'paid'}
+                        checked={type === 'paid'}
                         value="paid"
                         className="from-check-input"
                         name="type"
@@ -153,10 +155,11 @@ const Create = ({ req }) => {
         } else {
             all.splice(clickedCategory, 1);
         }
-        //console.log('all >> categories', all);
+        console.log('all >> categories', all);
         setState({ ...state, categories: all, success: '', error: '' });
     };
 
+    // show categories > checkbox
     const showCategories = () => {
         return (
             loadedCategories &&
@@ -192,7 +195,7 @@ const Create = ({ req }) => {
         <Layout>
             <div className="row">
                 <div className="col-md-12">
-                    <h1>Submit Link</h1>
+                    <h1>Submit Link/URL</h1>
                     <br />
                 </div>
             </div>
@@ -220,14 +223,5 @@ const Create = ({ req }) => {
         </Layout>
     );
 };
-
-// Create.getInitialProps = ({ req }) => {
-//     const token = getCookie('token', req);
-//     return { token };
-// };
-
-// export const getStaticProps = ({ req }) => {
-//     return { props: { token: getCookie('token', req) } };
-// };
 
 export default Create;
