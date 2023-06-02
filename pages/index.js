@@ -98,18 +98,24 @@ const Home = ({ categories }) => {
     );
 };
 
-export const getStaticProps = async () => {
-    const response = await axios.get(`${API}/categories`);
-    return { props: { categories: response.data } };
-};
-
-
-// Home.getstaticProps = async () => {
+// export const getStaticProps = async () => {
 //     const response = await axios.get(`${API}/categories`);
-//     const rr = await response.data;
-//     return {
-//         categories: rr
-//     };
+//     return { props: { categories: response.data } };
 // };
+
+
+// // Home.getstaticProps = async () => {
+// //     const response = await axios.get(`${API}/categories`);
+// //     const rr = await response.data;
+// //     return {
+// //         categories: rr
+// //     };
+// // };
+Home.getInitialProps = async () => {
+    const response = await axios.get(`${API}/categories`);
+    return {
+        categories: response.data
+    };
+};
 
 export default Home;
