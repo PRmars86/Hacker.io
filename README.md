@@ -5,7 +5,7 @@ Add few improvements to make it infinitely scalable and easier to maintain. Low 
 
 http://ec2-18-218-142-81.us-east-2.compute.amazonaws.com/
 
-Tech stack:
+## Tech stack:
 
 Using React and NextJS (React Framework) in the client side.
 
@@ -17,7 +17,7 @@ Use Mongo Atlas as Managed Database Service in the cloud.
 
 
 
-Aim of the project
+## Aim of the project
 
 Target millions of potentials users to use and engage with our app
 
@@ -32,7 +32,7 @@ Users will signup/signin to our app to post/share/like the links/urls
 Users will do this to get free traffic... to get people's attention... sharing links for free
 
 
-Overview of the project
+## Overview of the project
 
 Login/Register System
 
@@ -56,7 +56,7 @@ Our aim is to enable just 1 or 2 developer to maintain the entire project and co
 
 
 
-What I have learnt
+## What I have learnt
 
 Learn React JS (Frontend) Web Development
 Learn to use Next Js - A React Framework for Production Apps
