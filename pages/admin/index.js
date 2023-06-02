@@ -25,6 +25,11 @@ const Admin = ({ user, token }) => (
                             <a className="nav-link">All links</a>
                         </Link>
                     </li>
+                    <li className="nav-item">
+                        <Link legacyBehavior href="/user/profile/update">
+                            <a className="nav-link">Profile update</a>
+                        </Link>
+                    </li>
                 </ul>
             </div>
             <div className="col-md-8"></div>
